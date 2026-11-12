@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0a1b14">
+  <meta name="description" content="БОЛЬШОЙ УСПЕХ — одежда и обувь в Воронеже. Футболки от 250 ₽, свитеры, кроссовки и куртки. Адрес: ул. Куцыгина, 17.">
+  <title>БОЛЬШОЙ УСПЕХ — одежда с характером · Воронеж</title>
+
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%230a1b14'/%3E%3Cpath d='M18 18h28v8H27v6h10c16 0 16 20 0 20H18zm9 22v5h9c4 0 4-5 0-5z' fill='%23bdff63'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0a1b14;
+      --panel: #12271e;
+      --ink: #f1f4eb;
+      --muted: #abb9ae;
+      --green: #bdff63;
+      --red: #ff625c;
+      --line: rgba(222, 255, 224, .14);
+      --font: "Manrope", sans-serif;
+      --display: "Unbounded", sans-serif;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 108px; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 500 16px/1.65 var(--font); }
+    body.modal-open { overflow: hidden; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { font: inherit; cursor: pointer; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; width: 100%; }
+
+    button:focus-visible, a:focus-visible, dialog:focus-visible {
+      outline: 3px solid var(--green); outline-offset: 5px;
+    }
+    ::selection { background: var(--green); color: var(--bg); }
+    h1, h2, h3, p { margin: 0; }
+
+    .container { width: min(1240px, calc(100% - 64px)); margin-inline: auto; }
+    .icon { width: 22px; height: 22px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+    .svg-sprite { position: absolute; }
+    .accent-dot { color: var(--red); }
+
+    .skip-link {
+      position: fixed; top: 10px; left: 10px; z-index: 100;
+      padding: 12px 20px; background: var(--green); color: var(--bg);
+      border-radius: 12px; transform: translateY(-150%);
+    }
+    .skip-link:focus { transform: translateY(0); }
+
+    .site-header {
+      position: sticky; top: 0; z-index: 20;
+      background: rgba(10, 27, 20, .82);
+      border-bottom: 1px solid var(--line);
+      -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
+    }
+    .header-inner { min-height: 88px; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+
+    .brand { display: inline-flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .brand-mark {
+      width: 42px; height: 42px; display: grid; place-items: center;
+      border-radius: 13px; background: var(--green); color: var(--bg);
+      transform: rotate(-8deg); box-shadow: 0 4px 0 #638f30;
+    }
+    .brand-mark .icon { width: 28px; height: 28px; stroke-width: 2.4; }
+    .brand-name { font: 800 13px/1.4 var(--display); letter-spacing: -.5px; }
+    .brand-name span { display: block; }
+
+    .nav { display: flex; gap: 30px; color: #d1dbd2; font-size: 14px; }
+    .nav a { transition: color .2s; }
+    .nav a:hover { color: var(--green); }
+
+    .header-phone { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 800; }
+    .header-phone .icon { color: var(--green); }
+    .phone-short { display: none; }
+
+    .hero { position: relative; isolation: isolate; overflow: hidden; padding: 72px 0 66px; }
+    .hero::before {
+      content: ""; position: absolute; z-index: -1;
+      inset: -20% -30% 0 20%;
+      background: radial-gradient(ellipse, rgba(118, 190, 73, .13), transparent 65%);
+      pointer-events: none;
+    }
+    .hero-grid { display: grid; grid-template-columns: 1.18fr 1fr; align-items: center; gap: 22px; }
+
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 9px;
+      text-transform: uppercase; font-size: 11px; font-weight: 800; letter-spacing: 1.8px;
+    }
+    .dot { width: 7px; height: 7px; background: var(--green); border-radius: 50%; box-shadow: 0 0 13px rgba(189, 255, 99, .6); }
+    .hero-location { margin-bottom: 26px; color: #d0dccd; }
+
+    .title-scene { perspective: 1000px; }
+    .hero-title {
+      position: relative;
+      font: 900 clamp(36px, 5.8vw, 77px)/1.16 var(--display);
+      letter-spacing: -.065em;
+      transform: rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
+      transform-style: preserve-3d;
+      transition: transform .25s ease-out;
+      text-shadow:
+        0 1px 0 #53784a, 0 2px 0 #4b6f42, 0 3px 0 #42643a,
+        0 4px 0 #3c5b34, 0 5px 0 #33512c, 0 6px 0 #2a4724,
+        0 12px 24px rgba(0, 0, 0, .35);
+    }
+    .hero-title span { display: block; }
+    .hero-title .title-green { color: var(--green); font-size: 1.43em; letter-spacing: -.07em; }
+
+    .hero-description { max-width: 410px; margin: 30px 0 28px; color: var(--muted); font-size: 17px; }
+    .hero-description strong { color: var(--ink); font-weight: 600; }
+
+    .button {
+      min-height: 54px; padding: 14px 23px;
+      display: inline-flex; justify-content: center; align-items: center; gap: 18px;
+      border: 1px solid transparent; border-radius: 14px;
+      font-size: 14px; font-weight: 800;
+      transition: transform .22s, box-shadow .22s, background .22s;
+    }
+    .button:hover { transform: translateY(-3px); }
+    .button-primary { background: var(--green); color: var(--bg); box-shadow: 0 7px 24px rgba(149, 235, 64, .12); }
+    .button-primary:hover { background: #cdff8c; box-shadow: 0 10px 32px rgba(149, 235, 64, .25); }
+    .button-outline { border-color: var(--line); background: rgba(255, 255, 255, .04); color: var(--ink); }
+    .button-outline:hover { background: rgba(255, 255, 255, .09); }
+    .hero-caption { margin-top: 17px; color: var(--muted); font-size: 12px; }
+
+    .hero-art { position: relative; min-height: 485px; display: grid; place-items: center; perspective: 1200px; }
+    .orbit { position: absolute; width: 95%; aspect-ratio: 1; border: 1px solid rgba(189, 255, 99, .15); border-radius: 50%; transform: rotateX(63deg) rotateZ(-28deg); }
+    .orbit::after { content: ""; position: absolute; inset: -35px; border: 1px solid rgba(189, 255, 99, .07); border-radius: 50%; }
+
+    .showcase { position: relative; width: 78%; transform: rotate(-9deg); animation: float 7s ease-in-out infinite; }
+    .showcase::before {
+      content: ""; position: absolute; inset: 20px -15px -15px 15px;
+      background: #a6e449; border-radius: 36px;
+      transform: rotate(7deg); box-shadow: 0 30px 75px rgba(0, 0, 0, .3);
+    }
+    .showcase-photo {
+      position: relative; aspect-ratio: .87; border-radius: 34px; overflow: hidden;
+      background: #d82327; border: 1px solid rgba(255, 255, 255, .3);
+      box-shadow: inset 0 0 30px rgba(255, 255, 255, .1), 0 25px 65px rgba(0, 0, 0, .3);
+    }
+    .showcase-photo img { height: 100%; object-fit: cover; }
+    .showcase-label {
+      position: absolute; top: 20px; left: 20px; padding: 7px 12px;
+      border: 1px solid rgba(255, 255, 255, .35); border-radius: 50px;
+      background: rgba(40, 15, 15, .15);
+      -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+      font-size: 10px; font-weight: 800; letter-spacing: 2px;
+    }
+
+    .art-sticker {
+      position: absolute; top: 11px; right: 0;
+      width: 114px; height: 114px; display: grid; align-content: center; text-align: center;
+      border-radius: 50%; background: var(--green); color: var(--bg);
+      transform: rotate(15deg); box-shadow: 0 8px 0 #557b2c, 0 12px 30px rgba(0, 0, 0, .22);
+      font: 800 11px/1.5 var(--display);
+    }
+    .art-sticker .icon { margin: 0 auto 4px; width: 28px; height: 28px; }
+
+    .price-glass {
+      position: absolute; left: -4px; bottom: 17px;
+      padding: 17px 24px; border: 1px solid rgba(255, 255, 255, .25);
+      border-radius: 20px; background: rgba(21, 48, 33, .68);
+      -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, .22); transform: rotate(4deg);
+    }
+    .price-glass span { display: block; color: #d6e2d7; font-size: 12px; }
+    .price-glass strong { color: var(--green); font: 800 29px/1.5 var(--display); letter-spacing: -1px; }
+    .art-note { position: absolute; right: 4px; bottom: -9px; color: var(--muted); font-size: 10px; letter-spacing: 2px; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0) rotate(-9deg); }
+      50% { transform: translateY(-13px) rotate(-6deg); }
+    }
+
+    .ticker { overflow: hidden; border-block: 1px solid rgba(189, 255, 99, .2); background: #10281a; }
+    .ticker-inner {
+      min-height: 62px; display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; color: var(--green);
+      font: 600 11px/1.5 var(--display); text-transform: uppercase; letter-spacing: .5px;
+    }
+    .ticker-star { color: var(--red); font-size: 28px; }
+
+    .section { padding-block: 86px; }
+    .section-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 32px; }
+    .section .eyebrow { color: var(--green); margin-bottom: 12px; }
+    .section-title { font: 700 clamp(28px, 4vw, 46px)/1.25 var(--display); letter-spacing: -2px; }
+    .section-description { max-width: 300px; color: var(--muted); font-size: 14px; }
+
+    .product-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px; }
+    .product-card {
+      min-width: 0; position: relative; padding: 9px;
+      border: 1px solid var(--line); border-radius: 24px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, .065), rgba(255, 255, 255, .02));
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .12);
+      transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+      transition: transform .25s ease-out, border-color .25s, box-shadow .25s;
+    }
+    .product-card:hover, .product-card:focus-within {
+      border-color: rgba(189, 255, 99, .55);
+      box-shadow: 0 18px 36px rgba(0, 0, 0, .22), 0 0 24px rgba(145, 224, 66, .1);
+    }
+    .product-visual { position: relative; aspect-ratio: 1; border-radius: 17px; overflow: hidden; background: #d5dbce; }
+    .product-visual img { height: 100%; object-fit: cover; transition: transform .6s ease; }
+    .product-card:hover img { transform: scale(1.06); }
+
+    .product-index {
+      position: absolute; top: 11px; left: 11px;
+      display: grid; place-items: center;
+      min-width: 31px; height: 27px; padding: 0 8px;
+      border: 1px solid rgba(255, 255, 255, .5); border-radius: 9px;
+      background: rgba(247, 249, 240, .85); color: #13251a;
+      font-size: 10px; font-weight: 800;
+      -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+    }
+    .product-content { padding: 17px 9px 10px; }
+    .product-content h3 { min-height: 49px; font-size: 17px; font-weight: 700; line-height: 1.4; }
+    .product-content h3 small { display: block; font-size: 12px; color: var(--muted); font-weight: 500; }
+
+    .product-bottom { margin-top: 13px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .price { white-space: nowrap; font-size: 23px; font-weight: 800; letter-spacing: -.8px; }
+    .price span { color: var(--muted); font-size: 17px; font-weight: 500; }
+
+    .buy-button {
+      display: inline-flex; align-items: center; gap: 9px;
+      min-height: 40px; padding: 9px 13px;
+      background: var(--green); border: 0; border-radius: 11px;
+      color: var(--bg); font-size: 12px; font-weight: 800;
+      transition: background .2s, transform .2s;
+    }
+    .buy-button:hover { background: #d0ff91; transform: translateY(-2px); }
+    .buy-button .icon { width: 15px; height: 15px; }
+    .catalog-note { margin-top: 22px; color: var(--muted); font-size: 12px; }
+
+    .visit { padding-top: 18px; }
+    .visit-panel {
+      position: relative; display: grid; grid-template-columns: .85fr 1.15fr;
+      min-height: 430px; border: 1px solid var(--line);
+      border-radius: 30px; padding: 10px;
+      background: linear-gradient(135deg, rgba(119, 179, 77, .12), rgba(255, 255, 255, .025));
+      box-shadow: 0 22px 60px rgba(0, 0, 0, .15);
+    }
+    .visit-copy { padding: 35px 30px; }
+    .visit-copy .section-title { font-size: clamp(27px, 3.2vw, 37px); }
+
+    .address { display: flex; align-items: flex-start; gap: 12px; margin: 27px 0 23px; }
+    .address .icon { color: var(--red); margin-top: 4px; }
+    .address strong { font-size: 19px; font-weight: 700; }
+    .address span { display: block; color: var(--muted); font-size: 13px; }
+
+    .visit-text { max-width: 330px; color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+
+    .map-frame {
+      position: relative; min-height: 370px; border-radius: 22px; overflow: hidden;
+      background: #e4e7dd; border: 1px solid rgba(189, 255, 99, .25);
+    }
+    .map-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; color-scheme: light; }
+
+    .footer { border-top: 1px solid var(--line); padding: 35px 0 24px; }
+    .footer-main { display: flex; justify-content: space-between; align-items: center; gap: 30px; }
+    .footer-address { color: var(--muted); font-size: 13px; }
+    .footer-phone { font-size: 19px; font-weight: 800; transition: color .2s; }
+    .footer-phone:hover { color: var(--green); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; gap: 15px;
+      padding-top: 28px; margin-top: 27px; border-top: 1px solid var(--line);
+      color: var(--muted); font-size: 11px;
+    }
+    .footer-bottom a { display: inline-flex; align-items: center; gap: 7px; }
+    .footer-bottom .icon { width: 14px; height: 14px; }
+
+    .reveal.pending { opacity: 0; transform: translateY(24px); }
+    .reveal { transition: opacity .65s ease, transform .65s ease; }
+
+    .order-dialog {
+      width: min(460px, calc(100% - 32px)); max-height: calc(100dvh - 32px);
+      padding: 32px; border: 1px solid rgba(189, 255, 99, .3);
+      border-radius: 26px; background: #13271d; color: var(--ink);
+      box-shadow: 0 30px 120px rgba(0, 0, 0, .5);
+    }
+    .order-dialog::backdrop { background: rgba(1, 10, 5, .78); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+
+    .dialog-close {
+      position: absolute; top: 16px; right: 16px;
+      display: grid; place-items: center; width: 38px; height: 38px;
+      border: 1px solid var(--line); border-radius: 50%;
+      background: transparent; color: var(--ink);
+    }
+    .dialog-close:hover { background: rgba(255, 255, 255, .1); }
+    .order-dialog .eyebrow { color: var(--green); padding-right: 32px; margin-bottom: 22px; }
+    .order-dialog h2 { font: 700 25px/1.4 var(--display); letter-spacing: -1px; }
+    .dialog-price { margin: 12px 0 20px; color: var(--green); font-size: 32px; font-weight: 800; }
+    .dialog-text { font-size: 14px; color: var(--muted); }
+    .dialog-address { padding-top: 18px; font-size: 13px; }
+    .order-dialog .button { width: 100%; margin-top: 24px; gap: 10px; }
+    .dialog-number { display: block; text-align: center; margin-top: 12px; font-size: 13px; color: var(--muted); }
+
+    @media (min-width: 1450px) { .hero-title { font-size: 77px; } }
+
+    @media (max-width: 1100px) {
+      .container { width: calc(100% - 48px); }
+      .nav { gap: 20px; }
+      .hero-title { font-size: 5.8vw; }
+      .hero-art { min-height: 425px; }
+      .art-sticker { width: 95px; height: 95px; font-size: 10px; }
+      .product-grid { gap: 16px; }
+      .product-content { padding-inline: 4px; }
+      .product-bottom { flex-wrap: wrap; }
+      .visit-copy { padding: 28px 22px; }
+    }
+
+    @media (max-width: 860px) {
+      .nav { display: none; }
+      .hero { padding-top: 48px; }
+      .hero-grid { gap: 12px; }
+      .hero-art { min-height: 370px; }
+      .showcase { width: 83%; }
+      .hero-description { font-size: 15px; }
+      .art-sticker { width: 82px; height: 82px; font-size: 9px; }
+      .price-glass { bottom: 20px; padding: 12px 16px; }
+      .price-glass strong { font-size: 24px; }
+      .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+      .product-content { padding-inline: 9px; }
+      .product-bottom { flex-wrap: nowrap; }
+      .ticker-inner { justify-content: center; flex-wrap: wrap; gap: 10px 18px; padding-block: 14px; }
+      .ticker-inner .ticker-extra { display: none; }
+      .section { padding-block: 64px; }
+      .visit { padding-top: 0; }
+      .visit-panel { grid-template-columns: 1fr 1fr; }
+      .visit-copy { padding: 26px 20px; }
+      .footer-main { flex-wrap: wrap; }
+    }
+
+    @media (max-width: 620px) {
+      html { scroll-padding-top: 88px; }
+      .container { width: calc(100% - 36px); }
+      .header-inner { min-height: 74px; gap: 12px; }
+      .brand { gap: 10px; }
+      .brand-mark { width: 35px; height: 35px; border-radius: 10px; }
+      .brand-mark .icon { width: 24px; height: 24px; }
+      .brand-name { font-size: 10px; }
+      .phone-full { display: none; }
+      .phone-short { display: inline; }
+      .header-phone { font-size: 12px; gap: 6px; }
+      .header-phone .icon { width: 18px; height: 18px; }
+      .hero { padding: 35px 0 32px; }
+      .hero-grid { grid-template-columns: 1fr; gap: 26px; }
+      .hero-location { margin-bottom: 21px; font-size: 10px; }
+      .hero-title { font-size: clamp(30px, 9.25vw, 57px); }
+      .hero-description { margin: 22px 0; max-width: 350px; font-size: 15px; }
+      .hero-caption { margin-top: 12px; }
+      .hero-art { min-height: 370px; width: min(100%, 380px); margin-inline: auto; }
+      .showcase { width: 70%; }
+      .art-sticker { top: 17px; right: 7px; width: 90px; height: 90px; font-size: 10px; }
+      .price-glass { left: 10px; bottom: 24px; }
+      .art-note { bottom: 0; right: 8px; }
+      .ticker-inner { font-size: 9px; gap: 12px; min-height: 55px; }
+      .ticker-star { font-size: 21px; }
+      .ticker-mobile-hide { display: none; }
+      .section { padding-block: 48px; }
+      .section-top { display: block; margin-bottom: 24px; }
+      .section-title { letter-spacing: -1.4px; }
+      .section-description { margin-top: 15px; max-width: 320px; }
+      .product-grid { gap: 12px; }
+      .product-card { padding: 6px; border-radius: 18px; }
+      .product-visual { border-radius: 13px; aspect-ratio: .88; }
+      .product-content { padding: 13px 5px 7px; }
+      .product-content h3 { font-size: 14px; min-height: 43px; }
+      .product-content h3 small { font-size: 10px; }
+      .product-bottom { gap: 9px; flex-wrap: wrap; margin-top: 10px; }
+      .price { font-size: 21px; }
+      .buy-button { width: 100%; justify-content: space-between; min-height: 38px; }
+      .product-index { top: 8px; left: 8px; height: 24px; min-width: 26px; font-size: 9px; }
+      .catalog-note { font-size: 11px; }
+      .visit { padding-top: 0; }
+      .visit-panel { grid-template-columns: 1fr; border-radius: 24px; }
+      .visit-copy { padding: 24px 16px 30px; }
+      .visit-text { max-width: none; }
+      .map-frame { min-height: 330px; border-radius: 17px; }
+      .footer-main { align-items: flex-start; flex-direction: column; gap: 22px; }
+      .footer-bottom { flex-direction: column; margin-top: 24px; padding-top: 20px; }
+      .order-dialog { padding: 28px 24px; }
+    }
+
+    @media (max-width: 340px) {
+      .product-grid { grid-template-columns: 1fr; }
+      .ticker-star { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+      .hero-title, .product-card { transform: none !important; }
+      .reveal.pending { opacity: 1; transform: none; }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip-link" href="#catalog">Перейти к каталогу</a>
+
+  <svg class="svg-sprite" xmlns="http://www.w3.org/2000/svg" width="0" height="0" aria-hidden="true">
+    <defs>
+      <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+      <symbol id="icon-phone" viewBox="0 0 24 24"><path d="m8 3 3 5-3 2a15 15 0 0 0 6 6l2-3 5 3-1 4c-1 3-8 0-12-4S1 5 4 4l4-1Z"/></symbol>
+      <symbol id="icon-pin" viewBox="0 0 24 24"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></symbol>
+      <symbol id="icon-star" viewBox="0 0 24 24"><path d="m12 2 2.5 6.5L21 6l-2.5 6.5L22 16l-7 1-3 5-3-5-7-1 3.5-3.5L3 6l6.5 2.5L12 2Z"/></symbol>
+      <symbol id="icon-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+      <symbol id="icon-up" viewBox="0 0 24 24"><path d="M12 19V5m-6 6 6-6 6 6"/></symbol>
+    </defs>
+  </svg>
+
+  <header class="site-header" id="top">
+    <div class="container header-inner">
+      <a class="brand" href="#top" aria-label="БОЛЬШОЙ УСПЕХ — на главную">
+        <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#icon-star"/></svg></span>
+        <span class="brand-name">БОЛЬШОЙ<span>УСПЕХ</span></span>
+      </a>
+      <nav class="nav" aria-label="Основная навигация">
+        <a href="#catalog">Каталог</a>
+        <a href="#visit">Как нас найти</a>
+      </nav>
+      <a class="header-phone" href="tel:+79000000000">
+        <svg class="icon" aria-hidden="true"><use href="#icon-phone"/></svg>
+        <span class="phone-full">+7 (900) 000-00-00</span>
+        <span class="phone-short">Позвонить</span>
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow hero-location"><span class="dot" aria-hidden="true"></span>Воронеж · ул. Куцыгина, 17</p>
+          <div class="title-scene">
+            <h1 class="hero-title" id="hero-title">
+              <span>БОЛЬШОЙ</span>
+              <span class="title-green">УСПЕХ</span>
+            </h1>
+          </div>
+          <p class="hero-description">
+            <strong>Твой стиль. Твои правила.</strong><br>
+            Одежда и обувь с характером — по ценам, которые хочется примерить.
+          </p>
+          <a class="button button-primary" href="#catalog">
+            Смотреть каталог
+            <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg>
+          </a>
+          <p class="hero-caption">От 250 ₽ до большого обновления гардероба.</p>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit"></div>
+          <div class="showcase">
+            <div class="showcase-photo">
+              <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=85" width="783" height="900" alt="" fetchpriority="high">
+              <span class="showcase-label">БОЛЬШОЙ УСПЕХ / ВОРОНЕЖ</span>
+            </div>
+          </div>
+          <div class="art-sticker">
+            <svg class="icon"><use href="#icon-star"/></svg>
+            БОЛЬШЕ<br>ТВОЕГО СТИЛЯ
+          </div>
+          <div class="price-glass">
+            <span>Твой новый образ</span>
+            <strong>от 250 ₽</strong>
+          </div>
+          <span class="art-note">НОСИ ТО, ЧТО НРАВИТСЯ ↗</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="ticker" aria-hidden="true">
+      <div class="container ticker-inner">
+        <span>Большой стиль</span>
+        <span class="ticker-star">✳</span>
+        <span>Приятные цены</span>
+        <span class="ticker-star ticker-mobile-hide">✳</span>
+        <span class="ticker-mobile-hide">Воронеж, это твой успех</span>
+        <span class="ticker-star ticker-extra">✳</span>
+        <span class="ticker-extra">От 250 ₽</span>
+      </div>
+    </div>
+
+    <section class="section" id="catalog" aria-labelledby="catalog-title">
+      <div class="container">
+        <div class="section-top reveal">
+          <div>
+            <p class="eyebrow">01 / Выбирай своё</p>
+            <h2 class="section-title" id="catalog-title">Тот самый каталог<span class="accent-dot">.</span></h2>
+          </div>
+          <p class="section-description">База на каждый день и акценты для твоего образа. Найди свой большой успех.</p>
+        </div>
+
+        <div class="product-grid">
+          <article class="product-card" data-name="Футболки" data-price="250">
+            <div class="product-visual">
+              <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=700&q=80" width="700" height="700" loading="lazy" decoding="async" alt="Белая футболка — пример категории">
+              <span class="product-index" aria-hidden="true">01</span>
+            </div>
+            <div class="product-content">
+              <h3>Футболки</h3>
+              <div class="product-bottom">
+                <p class="price">250 <span>₽</span></p>
+                <button class="buy-button" type="button" aria-label="Купить футболки за 250 рублей">Купить <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-name="Свитеры" data-price="350">
+            <div class="product-visual">
+              <img src="https://images.unsplash.com/photo-1578587018452-892bacefd3f2?auto=format&fit=crop&w=700&q=80" width="700" height="700" loading="lazy" decoding="async" alt="Оранжевый свитер — пример категории">
+              <span class="product-index" aria-hidden="true">02</span>
+            </div>
+            <div class="product-content">
+              <h3>Свитеры</h3>
+              <div class="product-bottom">
+                <p class="price">350 <span>₽</span></p>
+                <button class="buy-button" type="button" aria-label="Купить свитеры за 350 рублей">Купить <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-name="Кроссовки" data-price="350">
+            <div class="product-visual">
+              <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?auto=format&fit=crop&w=700&q=80" width="700" height="700" loading="lazy" decoding="async" alt="Кроссовки — пример категории">
+              <span class="product-index" aria-hidden="true">03</span>
+            </div>
+            <div class="product-content">
+              <h3>Кроссовки</h3>
+              <div class="product-bottom">
+                <p class="price">350 <span>₽</span></p>
+                <button class="buy-button" type="button" aria-label="Купить кроссовки за 350 рублей">Купить <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-name="Толстовки" data-price="350">
+            <div class="product-visual">
+              <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=700&q=80" width="700" height="700" loading="lazy" decoding="async" alt="Толстовка с капюшоном — пример категории">
+              <span class="product-index" aria-hidden="true">04</span>
+            </div>
+            <div class="product-content">
+              <h3>Толстовки</h3>
+              <div class="product-bottom">
+                <p class="price">350 <span>₽</span></p>
+                <button class="buy-button" type="button" aria-label="Купить толстовки за 350 рублей">Купить <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-name="Обувь (обычная)" data-price="350">
+            <div class="product-visual">
+              <img src="https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?auto=format&fit=crop&w=700&q=80" width="700" height="700" loading="lazy" decoding="async" alt="Классическая обувь — пример категории">
+              <span class="product-index" aria-hidden="true">05</span>
+            </div>
+            <div class="product-content">
+              <h3>Обувь<small>На каждый день</small></h3>
+              <div class="product-bottom">
+                <p class="price">350 <span>₽</span></p>
+                <button class="buy-button" type="button" aria-label="Купить обычную обувь за 350 рублей">Купить <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-name="Ветровки" data-price="500">
+            <div class="product-visual">
+              <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=700&q=80" width="700" height="700" loading="lazy" decoding="async" alt="Лёгкая куртка — пример категории ветровок">
+              <span class="product-index" aria-hidden="true">06</span>
+            </div>
+            <div class="product-content">
+              <h3>Ветровки</h3>
+              <div class="product-bottom">
+                <p class="price">500 <span>₽</span></p>
+                <button class="buy-button" type="button" aria-label="Купить ветровки за 500 рублей">Купить <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-name="Куртки" data-price="1000">
+            <div class="product-visual">
+              <img src="https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=700&q=80" width="700" height="700" loading="lazy" decoding="async" alt="Куртка — пример категории">
+              <span class="product-index" aria-hidden="true">07</span>
+            </div>
+            <div class="product-content">
+              <h3>Куртки</h3>
+              <div class="product-bottom">
+                <p class="price">1 000 <span>₽</span></p>
+                <button class="buy-button" type="button" aria-label="Купить куртки за 1000 рублей">Купить <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></button>
+              </div>
+            </div>
+          </article>
+
+          <article class="product-card" data-name="Шапки / кепки «Сипи компани»" data-price="300">
+            <div class="product-visual">
+              <img src="https://images.unsplash.com/photo-1588850561407-ed78c282e89b?auto=format&fit=crop&w=700&q=80" width="700" height="700" loading="lazy" decoding="async" alt="Кепка — пример категории головных уборов">
+              <span class="product-index" aria-hidden="true">08</span>
+            </div>
+            <div class="product-content">
+              <h3>Шапки / кепки<small>«Сипи компани»</small></h3>
+              <div class="product-bottom">
+                <p class="price">300 <span>₽</span></p>
+                <button class="buy-button" type="button" aria-label="Купить шапки или кепки Сипи компани за 300 рублей">Купить <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg></button>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <p class="catalog-note">
+          Фото — примеры категорий. Размеры, модели и наличие уточняйте по телефону:
+          <a href="tel:+79000000000">+7 (900) 000-00-00</a>.
+        </p>
+        <noscript>
+          <p class="catalog-note">Для покупки позвоните по номеру выше или приходите в магазин: Воронеж, ул. Куцыгина, 17.</p>
+        </noscript>
+      </div>
+    </section>
+
+    <section class="section visit" id="visit" aria-labelledby="visit-title">
+      <div class="container">
+        <div class="visit-panel reveal">
+          <div class="visit-copy">
+            <p class="eyebrow">02 / Встречаемся здесь</p>
+            <h2 class="section-title" id="visit-title">Успех ближе,<br>чем кажется.</h2>
+            <div class="address">
+              <svg class="icon" aria-hidden="true"><use href="#icon-pin"/></svg>
+              <div>
+                <strong>ул. Куцыгина, 17</strong>
+                <span>Воронеж</span>
+              </div>
+            </div>
+            <p class="visit-text">Приходи выбрать, примерить и найти своё. Перед визитом уточни время работы и наличие по телефону.</p>
+            <a class="button button-outline" href="https://yandex.ru/maps/?text=%D0%92%D0%BE%D1%80%D0%BE%D0%BD%D0%B5%D0%B6%2C%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%9A%D1%83%D1%86%D1%8B%D0%B3%D0%B8%D0%BD%D0%B0%2C%2017" target="_blank" rel="noopener noreferrer">
+              Открыть в Яндекс.Картах
+              <svg class="icon" aria-hidden="true"><use href="#icon-arrow"/></svg>
+            </a>
+          </div>
+
+          <div class="map-frame">
+            <iframe
+              src="https://www.openstreetmap.org/export/embed.html?bbox=39.1919%2C51.6685%2C39.1989%2C51.6725&layer=mapnik&marker=51.6705%2C39.1954"
+              title="Карта с меткой: Воронеж, улица Куцыгина, 17"
+              width="700"
+              height="430"
+              loading="lazy"
+            ></iframe>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-main">
+        <a class="brand" href="#top" aria-label="БОЛЬШОЙ УСПЕХ — наверх">
+          <span class="brand-mark"><svg class="icon" aria-hidden="true"><use href="#icon-star"/></svg></span>
+          <span class="brand-name">БОЛЬШОЙ<span>УСПЕХ</span></span>
+        </a>
+        <p class="footer-address">Одежда и обувь с характером.<br>Воронеж, ул. Куцыгина, 17</p>
+        <a class="footer-phone" href="tel:+79000000000">+7 (900) 000-00-00</a>
+      </div>
+      <div class="footer-bottom">
+        <p>© <span id="year">2026</span> БОЛЬШОЙ УСПЕХ</p>
+        <a href="#top">К большим вершинам <svg class="icon" aria-hidden="true"><use href="#icon-up"/></svg></a>
+      </div>
+    </div>
+  </footer>
+
+  <dialog class="order-dialog" id="order-dialog" aria-labelledby="order-title" aria-describedby="order-description">
+    <button class="dialog-close" type="button" aria-label="Закрыть окно" autofocus>
+      <svg class="icon" aria-hidden="true"><use href="#icon-close"/></svg>
+    </button>
+    <p class="eyebrow">Твой выбор</p>
+    <h2 id="order-title">Товар</h2>
+    <p class="dialog-price" id="order-price"></p>
+    <p class="dialog-text" id="order-description">Уточни размер, модель и наличие по телефону. Покупка и примерка — в нашем магазине.</p>
+    <p class="dialog-address">Воронеж, ул. Куцыгина, 17</p>
+    <a class="button button-primary" href="tel:+79000000000">
+      <svg class="icon" aria-hidden="true"><use href="#icon-phone"/></svg>
+      Позвонить для покупки
+    </a>
+    <span class="dialog-number">+7 (900) 000-00-00</span>
+  </dialog>
+
+  <script>
+    (() => {
+      'use strict';
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+      const cards = document.querySelectorAll('.product-card');
+      const dialog = document.getElementById('order-dialog');
+      const money = new Intl.NumberFormat('ru-RU', { style: 'currency', currency: 'RUB', maximumFractionDigits: 0 });
+
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      cards.forEach(card => {
+        card.querySelector('.buy-button').addEventListener('click', () => {
+          if (typeof dialog.showModal !== 'function') {
+            window.location.href = 'tel:+79000000000';
+            return;
+          }
+          document.getElementById('order-title').textContent = card.dataset.name;
+          document.getElementById('order-price').textContent = money.format(Number(card.dataset.price));
+          dialog.showModal();
+          document.body.classList.add('modal-open');
+        });
+
+        card.addEventListener('pointermove', event => {
+          if (reducedMotion.matches || !finePointer.matches || event.pointerType === 'touch') return;
+          const rect = card.getBoundingClientRect();
+          const x = (event.clientX - rect.left) / rect.width - .5;
+          const y = (event.clientY - rect.top) / rect.height - .5;
+          card.style.setProperty('--tilt-x', `${-y * 9}deg`);
+          card.style.setProperty('--tilt-y', `${x * 9}deg`);
+        });
+
+        card.addEventListener('pointerleave', () => {
+          card.style.setProperty('--tilt-x', '0deg');
+          card.style.setProperty('--tilt-y', '0deg');
+        });
+      });
+
+      dialog.querySelector('.dialog-close').addEventListener('click', () => dialog.close());
+      dialog.addEventListener('close', () => document.body.classList.remove('modal-open'));
+
+      let backdropPress = false;
+      const outsideDialog = event => {
+        const rect = dialog.getBoundingClientRect();
+        return event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom;
+      };
+      dialog.addEventListener('pointerdown', event => { backdropPress = outsideDialog(event); });
+      dialog.addEventListener('click', event => {
+        if (backdropPress && outsideDialog(event)) dialog.close();
+      });
+
+      const hero = document.querySelector('.hero');
+      const title = document.querySelector('.hero-title');
+      let scrollFrame = 0, pointerX = 0, pointerY = 0;
+
+      const updateTitle = () => {
+        scrollFrame = 0;
+        if (reducedMotion.matches || !finePointer.matches) return;
+        const progress = Math.min(window.scrollY / Math.max(hero.offsetHeight, 1), 1);
+        title.style.setProperty('--rx', `${pointerY + progress * 5}deg`);
+        title.style.setProperty('--ry', `${pointerX}deg`);
+      };
+
+      const requestTitle = () => { if (!scrollFrame) scrollFrame = requestAnimationFrame(updateTitle); };
+
+      hero.addEventListener('pointermove', event => {
+        if (reducedMotion.matches || !finePointer.matches || event.pointerType === 'touch') return;
+        const rect = hero.getBoundingClientRect();
+        pointerX = ((event.clientX - rect.left) / rect.width - .5) * 8;
+        pointerY = -((event.clientY - rect.top) / rect.height - .5) * 6;
+        requestTitle();
+      });
+
+      hero.addEventListener('pointerleave', () => { pointerX = 0; pointerY = 0; requestTitle(); });
+      window.addEventListener('scroll', requestTitle, { passive: true });
+
+      if ('IntersectionObserver' in window && !reducedMotion.matches) {
+        const observer = new IntersectionObserver(entries => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.remove('pending');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: .1 });
+
+        document.querySelectorAll('.reveal').forEach(element => {
+          element.classList.add('pending');
+          observer.observe(element);
+        });
+      }
+    })();
+  </script>
+</body>
+</html>
